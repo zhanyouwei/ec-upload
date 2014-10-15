@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+
+        /*#region 拖拽上传样式 */
+
+        .dropbox-div {
+            border: 1px solid #ccc;
+            width: 594px;
+            height: 60px;
+            display: table;
+        }
+
+        /*#endregion */
+    </style>
+    <script src="scripts/jquery-1.8.2.min.js"></script>
+    <script src="scripts/jquery.ec-upload.js"></script>
+</head>
+<body>
+<input id="upload_btn" type="button" onclick="upload.click()" value="点击选择文件" />
+<input id="upload" type="file" multiple="multiple" style="display: none" />
+<!--此层级结构不能轻易改变-->
+<div id="dropbox" class="dropbox-div" onclick="upload.click()">
+    文件拖放到此处<br />
+</div>
+<p>文件读取中：<span id="progressClient"></span></p>
+<p>文件读取完成，正在上传：<span id="progressServer"></span></p>
+<script>
+    $(function () {
+        $("#upload,#dropbox").ecuploader({
+            name: "file",//上传字段标示
+            fileType:["image/jpeg","image/jpg"],
+            postUrl: "http://upload.lvh.me/image",//将文件数据的url。
+            //调用JavaScript函数对象,每当readyState属性更改。从用户界面线程调用回调。
+            onServerReadyStateChange: function (e, file) {
+                console.log('onServerReadyStateChange');
+                console.log(e);
+            },
+            //post数据将要开始时调用
+            onServerLoadStart: function (e, file) {
+                console.log('onServerLoadStart');
+                console.log(e);
+            },
+            //读取将要开始时调用
+            onClientLoadStart: function (e, file) {
+                console.log('onClientLoadStart');
+                console.log(e);
+            },
+            //读取操作成功时调用
+            onClientLoad: function (e, file) {
+                console.log('onClientLoad');
+                console.log(e);
+            },
+            //数据在读取过程中周期性调用
+            onClientProgress: function (e, file) {
+                console.log('onClientProgress');
+                console.log(e);
+                $("#progressClient").html(((e.loaded / e.total) * 100).toFixed(2) + "%");
+            },
+            //无论是否成功，读取完成时调用。通常在onload和onerror后调用
+            onClientLoadEnd: function (e, file) {
+                console.log('onClientLoadEnd');
+                console.log(e);
+            },
+            //数据正在被post的过程中周期性调用
+            onServerProgress: function (e, file) {
+                console.log('onServerProgress');
+                console.log(e);
+                $("#progressServer").html(((e.loaded / e.total) * 100).toFixed(2) + "%");
+            },
+            // post操作成功时调用
+            onServerLoad: function (e, file) {
+                console.log('onServerLoad');
+//                console.log('onServerError');
+                console.log(e);
+            },
+            //读取操作终止时调用
+            onClientAbort: function (e, file) {
+                console.log('onClientAbort');
+                console.log(e);
+            },
+            //出错时调用
+            onClientError: function (e, file) {
+                console.log('onClientError');
+                console.log(e);
+            },
+            //post操作终止时调用
+            onServerAbort: function (e, file) {
+                console.log('onServerAbort');
+                console.log(e);
+            },
+            //错误发生时调用
+            onServerError: function (e, file) {
+                console.log('onServerError');
+                console.log(e);
+            },
+            //成功完成,ReadyState为4和HttpStatus是200。有用的从服务器返回信息。
+            onSuccess: function (e, file, xmlHttpRequest) {
+                console.log('onSuccess');
+                console.log(file);
+                console.log(xmlHttpRequest);
+                console.log(e);
+            },
+            onFileTypeError:function(file){
+                alert("文件类型不符，支持：" + this.fileType.toString());
+            }
+        });
+    })
+</script>
+</body>
+</html>
